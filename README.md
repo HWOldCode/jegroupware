@@ -12,6 +12,7 @@ I used this library for my projects:
 - EgwWinLogin & ELogin EGroupware App/Module
 - Notificater for OS System (new version in future)
 - EGroupware Workflow Java Node Server (future)
+- Android Client (future)?
 
 View to: https://www.hw-softwareentwicklung.de/projekte/egwwinlogon/
 
