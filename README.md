@@ -2,7 +2,9 @@
 jegroupware - Egroupware Java Client
 
 ## Info
-This client is testing by EGroupware 14.2 last update to 2015-06-10.
+This client is testing by EGroupware 14.2 last update to 2015-06-10.<br>
+![EGroupware](http://www.egroupware.org/fileadmin/content/Logo/logo.svg "Go To EGRoupware")<br>
+http://www.egroupware.org
 
 ## License
 http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
