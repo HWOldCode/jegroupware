@@ -1,5 +1,5 @@
 # jegroupware
-jegroupware - Egroupware Java Client
+jegroupware - Egroupware Java Client libary, use to control and remote your egroupware, in backend work http client, all function represent as api 
 
 ## Info
 This client is testing by EGroupware 14.2 last update to 2015-06-10.<br>
