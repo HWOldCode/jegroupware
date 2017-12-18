@@ -73,7 +73,7 @@ public class EgroupwareConfig implements Serializable {
      * use a egw thread
      */
     protected boolean _egwThread = true;
-    
+
     /**
      * EgroupwareConfig
      */
@@ -82,8 +82,7 @@ public class EgroupwareConfig implements Serializable {
     }
 
     /**
-     * constructor
-     *
+     * EgroupwareConfig
      * @param url
      * @param domain
      * @param user
@@ -97,8 +96,7 @@ public class EgroupwareConfig implements Serializable {
     }
 
     /**
-     * constructor
-     *
+     * EgroupwareConfig
      * @param autoLogin
      * @param url
      * @param domain
@@ -115,7 +113,6 @@ public class EgroupwareConfig implements Serializable {
 
     /**
      * setUrl
-     *
      * @param url String
      */
     public void setUrl(String url) {
@@ -197,7 +194,6 @@ public class EgroupwareConfig implements Serializable {
 
     /**
      * setAutoLogout
-     *
      * @param autologout
      */
     public void setAutoLogout(Boolean autologout) {
@@ -254,12 +250,12 @@ public class EgroupwareConfig implements Serializable {
 
     /**
      * setUseEgwThread
-     * @param enable 
+     * @param enable
      */
     public void setUseEgwThread(boolean enable) {
         this._egwThread = enable;
     }
-    
+
     /**
      * getUseEgwThread
      * @return boolean
@@ -267,7 +263,7 @@ public class EgroupwareConfig implements Serializable {
     public boolean getUseEgwThread() {
         return this._egwThread;
     }
-    
+
     /**
      * equals
      * @param config EgroupwareConfig
@@ -291,7 +287,6 @@ public class EgroupwareConfig implements Serializable {
 
 	/**
 	 * toSerializableString
-	 *
 	 * @param config
 	 * @return
 	 * @throws IOException
@@ -308,7 +303,6 @@ public class EgroupwareConfig implements Serializable {
 
 	/**
 	 * fromSerializableString
-	 *
 	 * @param serialize
 	 * @return
 	 * @throws IOException

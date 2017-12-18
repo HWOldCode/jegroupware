@@ -11,6 +11,7 @@
  */
 package com.jegroupware.egroupware;
 
+import com.jegroupware.egroupware.core.HTMLUtil;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -31,11 +32,14 @@ public class EgroupwareApps extends EgroupwarRequest {
     // data-navbar-apps
 	public static final String EGW_HTTP_DATA_NAVBAR_APPS = "data-navbar-apps";
 
+	// powered by egroupware
+	public static final String EGW_HTTP_DATA_POWER_BY = "Powered by EGroupware";
+
     // apps
     protected Map<String, Object> _apps = new HashMap<>();
 
     /**
-     * EgroupwareJson
+     * EgroupwareApps
      */
     public EgroupwareApps() {
         this._request_type = EgroupwarRequest.EGW_HTTP_REQUEST_GET;
@@ -46,7 +50,9 @@ public class EgroupwareApps extends EgroupwarRequest {
      * setRawContent
      * @param content
      */
+	@Override
     public void setRawContent(String content) {
+		// apps ----------------------------------------------------------------
         int begin = content.indexOf(EGW_HTTP_DATA_NAVBAR_APPS + "=\"");
 
         if( begin > -1 ) {
@@ -61,16 +67,18 @@ public class EgroupwareApps extends EgroupwarRequest {
                 try {
                     JSONParser parser = new JSONParser();
                     ContainerFactory containerFactory = new ContainerFactory(){
+						@Override
                         public List creatArrayContainer() {
                             return new LinkedList();
                         }
 
+						@Override
                         public Map createObjectContainer() {
                             return new LinkedHashMap();
                         }
                     };
 
-                    json = EgroupwarRequest.unescapeHTML(json.trim(), 0);
+                    json = HTMLUtil.unescapeHTML(json.trim(), 0);
 
                     LinkedList _json = (LinkedList)parser.parse(json
                             , containerFactory);
@@ -88,42 +96,57 @@ public class EgroupwareApps extends EgroupwarRequest {
 
                             if( t != null ) {
                                 ((EgroupwareApp)t).setTitle(title);
-                                
+
                                 this._apps.put(name, t);
                             }
                             else {
                                 this._apps.put(name, app);
                             }
-                        } catch( ClassNotFoundException ex ) {
-                            Logger.getLogger(EgroupwareApps.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch( Exception ex ) {
+                        }
+						catch( ClassNotFoundException ex ) {
+                            //Logger.getLogger(EgroupwareApps.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+						catch( Exception ex ) {
                             Logger.getLogger(EgroupwareApps.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                } catch( ParseException ex ) {
+                }
+				catch( ParseException ex ) {
                     Logger.getLogger(EgroupwareApps.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
+
+		// version -------------------------------------------------------------
+		int vbegin = content.indexOf(EGW_HTTP_DATA_POWER_BY);
+
+		if( vbegin > -1 ) {
+			int vend = content.indexOf("</a>",
+                vbegin + EGW_HTTP_DATA_POWER_BY.length());
+
+			if( (vbegin != -1) && (vend != -1) ) {
+				Egroupware.setVersion(content.substring(
+                    vbegin + EGW_HTTP_DATA_POWER_BY.length(),
+                    vend).trim());
+			}
+		}
     }
-    
+
     /**
      * getAppObject
-     * 
      * @param appname
-     * @return 
+     * @return
      */
     public EgroupwareApp getAppObject(String appname) {
         EgroupwareApp tapp = (EgroupwareApp) this._apps.get(appname);
-        
+
         return tapp;
     }
-    
+
     /**
      * existApp
-     * 
      * @param appname
-     * @return 
+     * @return
      */
     public Boolean existApp(String appname) {
         return this._apps.containsKey(appname);

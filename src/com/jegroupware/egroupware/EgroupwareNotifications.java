@@ -5,7 +5,7 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-16 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 14.2.6
  */
@@ -30,7 +30,7 @@ public class EgroupwareNotifications extends EgroupwareJson  {
 		"notifications.notifications_jdesk_ajax.confirm_message";
 
     /**
-     * constructor
+     * EgroupwareNotifications
      */
     public EgroupwareNotifications() {
         super();

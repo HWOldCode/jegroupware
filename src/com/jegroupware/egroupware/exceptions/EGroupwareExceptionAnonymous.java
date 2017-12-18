@@ -5,9 +5,9 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-17 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
- * @version 14.2.6
+ * @version 17.1
  */
 package com.jegroupware.egroupware.exceptions;
 
@@ -18,7 +18,7 @@ package com.jegroupware.egroupware.exceptions;
 public class EGroupwareExceptionAnonymous extends Exception {
 
     /**
-     * constructor
+     * EGroupwareExceptionAnonymous
      */
     public EGroupwareExceptionAnonymous() {
         super("you use anonymous, current methode not supported");

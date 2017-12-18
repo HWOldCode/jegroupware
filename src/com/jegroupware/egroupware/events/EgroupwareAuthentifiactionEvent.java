@@ -5,7 +5,7 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-16 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 14.2.6
  */
@@ -18,31 +18,33 @@ import com.jegroupware.egroupware.Egroupware;
  * @author Stefan Werfling
  */
 public class EgroupwareAuthentifiactionEvent extends EgroupwareEvent {
-    
+
+	/**
+	 * exception
+	 */
     protected Exception _exc;
-    
+
     /**
-     * constructor
-     * @param source 
+     * EgroupwareAuthentifiactionEvent
+     * @param source
      */
     public EgroupwareAuthentifiactionEvent(Egroupware source) {
         super(source);
     }
-    
+
     /**
-     * constructor
-     * 
+     * EgroupwareAuthentifiactionEvent
      * @param source
-     * @param exc 
+     * @param exc
      */
     public EgroupwareAuthentifiactionEvent(Egroupware source, Exception exc) {
         super(source);
         this._exc = exc;
     }
-    
+
     /**
      * getException
-     * @return 
+     * @return
      */
     public Exception getException() {
        return this._exc;

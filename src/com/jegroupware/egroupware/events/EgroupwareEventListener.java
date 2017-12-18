@@ -18,11 +18,46 @@ import java.util.EventListener;
  * @author Stefan Werfling
  */
 public interface EgroupwareEventListener extends EventListener {
+
+	/**
+	 * authentificationSucceeded
+	 * @param e
+	 */
     public void authentificationSucceeded(EgroupwareAuthentifiactionEvent e);
+
+	/**
+	 * authentificationFailed
+	 * @param e
+	 */
     public void authentificationFailed(EgroupwareAuthentifiactionEvent e);
+
+	/**
+	 * logoutSucceeded
+	 * @param e
+	 */
     public void logoutSucceeded(EgroupwareLogoutEvent e);
+
+	/**
+	 * logoutFailed
+	 * @param e
+	 */
     public void logoutFailed(EgroupwareLogoutEvent e);
+
+	/**
+	 * requestSucceeded
+	 * @param e
+	 */
     public void requestSucceeded(EgroupwareEventRequest e);
+
+	/**
+	 * requestFailed
+	 * @param e
+	 */
     public void requestFailed(EgroupwareEventRequest e);
+
+	/**
+	 * threadAction
+	 * @param e
+	 */
     public void threadAction(EgroupwareEvent e);
 }

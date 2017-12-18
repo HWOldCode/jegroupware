@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 /**
  * EgroupwareApp
- * 
  * @author Stefan Werfling
  */
 public class EgroupwareApp extends EgroupwareJson {
@@ -36,7 +35,12 @@ public class EgroupwareApp extends EgroupwareJson {
 	protected String _title = "";
 
 	/**
-	 * constructor
+	 * App template exec id
+	 */
+	protected String template_exec_id = "";
+
+	/**
+	 * EgroupwareApp
 	 * @param name
 	 */
 	public EgroupwareApp(String name, String title) {
@@ -45,7 +49,7 @@ public class EgroupwareApp extends EgroupwareJson {
 	}
 
     /**
-	 * constructor
+	 * EgroupwareApp
 	 * @param name
 	 */
 	public EgroupwareApp(String name) {
@@ -107,8 +111,7 @@ public class EgroupwareApp extends EgroupwareJson {
 
     /**
      * addAppsRegister
-     * 
-     * @param appclass 
+     * @param appclass
      */
     static public void addAppsRegister(String appclass) {
         _apps_register.add(appclass);

@@ -22,7 +22,6 @@ public class EgroupwareBrowser {
 
     /**
      * open
-     *
      * @param egw
      * @throws Exception
      */
@@ -30,21 +29,34 @@ public class EgroupwareBrowser {
         EgroupwareBrowser.open(egw, "");
     }
 
+	/**
+	 * open
+	 * @param egw
+	 * @param browser
+	 * @throws Exception
+	 */
     static public void open(Egroupware egw, String browser) throws Exception {
         EgroupwareBrowser.open(egw, null, "");
     }
 
+	/**
+	 * open
+	 * @param egw
+	 * @param menuaction
+	 * @param browser
+	 * @throws Exception
+	 */
     static public void open(Egroupware egw, String menuaction, String browser) throws Exception {
         try {
             if( egw.isLogin() ) {
                 String url = egw.createBrowserLink(menuaction);
-                
+
                 BrowserLauncher launcher = new BrowserLauncher();
 
                 if( browser == "" ) {
                     browser = egw.getConfig().getDefaultBrowser();
                 }
-                
+
                 if( browser == "" ) {
                     launcher.openURLinBrowser(url);
                 }
@@ -60,10 +72,9 @@ public class EgroupwareBrowser {
             throw new Exception("can not open system default browser");
         }
     }
-    
+
     /**
      * getSupportedBrowsers
-     *
      * @return
      * @throws Exception
      */

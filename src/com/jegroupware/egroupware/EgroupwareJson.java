@@ -31,6 +31,11 @@ public class EgroupwareJson extends EgroupwarRequest {
     // json
     public static final String EGW_HTTP_JSON = "json.php";
 
+	// Typs
+	public static final String TYPE_REDIRECT	= "redirect";
+	public static final String TYPE_DATA			= "data";
+	public static final String TYPE_ET2_LOAD	= "et2_load";
+
     /**
      * json
      */
@@ -60,12 +65,12 @@ public class EgroupwareJson extends EgroupwarRequest {
     @Override
     public void setRawContent(String content) throws EGroupwareExceptionRedirect {
         super.setRawContent(content);
-        
+
         // is json request
         if( this._request_url.indexOf(EgroupwareJson.EGW_HTTP_JSON) == -1 ) {
             return;
         }
-        
+
         JSONParser parser = new JSONParser();
         ContainerFactory containerFactory = new ContainerFactory(){
                 public List creatArrayContainer() {
@@ -80,25 +85,36 @@ public class EgroupwareJson extends EgroupwarRequest {
         try {
             this._json = (Map)parser.parse(content.trim(), containerFactory);
 
-            if( this._json != null ) {
+            if( this._json instanceof LinkedHashMap ) {
                 LinkedList respsone = (LinkedList) this._json.get("response");
 
-                if( respsone != null ) {
+                if( respsone instanceof LinkedList ) {
                     for( int i=0; i<respsone.size(); i++ ) {
                         LinkedHashMap rcontent = (LinkedHashMap) respsone.get(i);
 
-                        String type = (String) rcontent.get("type");
-                        LinkedHashMap data = (LinkedHashMap) rcontent.get("data");
+						if( rcontent.containsKey("type") ) {
+							String type = (String) rcontent.get("type");
 
-                        if( type.compareTo("redirect") == 0 ) {
-                            throw new EGroupwareExceptionRedirect((String) data.get("url"));
-                        }
+							if( rcontent.containsKey("data") ) {
+								Object _data = rcontent.get("data");
 
-                        System.out.println(i);
+								if( _data instanceof LinkedHashMap ) {
+									LinkedHashMap data = (LinkedHashMap) _data;
+
+									if( type.compareTo(EgroupwareJson.TYPE_REDIRECT) == 0 ) {
+										throw new EGroupwareExceptionRedirect((String) data.get("url"));
+									}
+									else if( type.compareTo(EgroupwareJson.TYPE_DATA) == 0 ) {
+										this._egroupwareData(data, _request_type);
+									}
+								}
+							}
+						}
                     }
                 }
             }
-        } catch( ParseException ex ) {
+        }
+		catch( ParseException ex ) {
             Logger.getLogger(
                 EgroupwareJson.class.getName()).log(
                     Level.SEVERE,
@@ -106,4 +122,11 @@ public class EgroupwareJson extends EgroupwarRequest {
                     ex);
         }
     }
+
+	/**
+	 * _egroupwareData
+	 * @param data
+	 * @param responseIndex
+	 */
+	protected void _egroupwareData(LinkedHashMap data, int responseIndex) {}
 }

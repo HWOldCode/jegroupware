@@ -5,9 +5,9 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-17 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
- * @version 14.2.6
+ * @version 17.1
  */
 package com.jegroupware.egroupware;
 
@@ -22,6 +22,7 @@ import com.jegroupware.egroupware.exceptions.EGroupwareExceptionLoginStatus;
 import com.jegroupware.egroupware.exceptions.EGroupwareExceptionRedirect;
 import com.jegroupware.egroupware.exceptions.EGroupwareExceptionSiteNotFound;
 import com.jegroupware.egroupware.exceptions.EGroupwareExceptionUnknowLoginDomain;
+import com.jegroupware.egroupware.exceptions.EGroupwareExceptionUserConfig;
 import com.jegroupware.egroupware.exceptions.EgroupwareExceptionResponseEmpty;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,7 +38,17 @@ import java.util.logging.Logger;
  */
 public class Egroupware implements Runnable {
 
-    // vars
+	/**
+	 * Static
+	 */
+	static {
+		EgroupwareHttp.addUserAgent("Java;" + System.getProperty("java.version"));
+		EgroupwareHttp.addUserAgent(EgroupwareConst.JEGW_TITLE + ";" + EgroupwareConst.JEGW_VERSION);
+	}
+
+    /**
+	 * Vars
+	 */
     public static final String EGW_HTTP_POST_VAR_PASSWORD_TYPE  = "passwd_type";
     public static final String EGW_HTTP_POST_VAR_ACCOUNT_TYPE   = "account_type";
     public static final String EGW_HTTP_POST_VAR_LOGINDOMAIN    = "logindomain";
@@ -45,12 +56,16 @@ public class Egroupware implements Runnable {
     public static final String EGW_HTTP_POST_VAR_PASSWD         = "passwd";
     public static final String EGW_HTTP_POST_VAR_SUBMITIT       = "submitit";
 
-    // values
+    /**
+	 * values
+	 */
     public static final String EGW_HTTP_POST_PASSWORD_TYPE_TEXT     = "text";
     public static final String EGW_HTTP_POST_ACCOUNT_TYPE_U         = "u";
     public static final String EGW_HTTP_POST_SUBMITIT               = "++Anmelden++";
 
-    // index
+    /**
+	 * Index
+	 */
     public static final String EGW_HTTP_INDEXSCRIPT         = "index.php";
 
     // LoginScript
@@ -70,9 +85,13 @@ public class Egroupware implements Runnable {
      */
     static protected List<Egroupware> _instances = new ArrayList<>();
 
+	/**
+	 * egroupware verson
+	 */
+	static protected String _version = null;
+
     /**
      * getInstance
-     *
      * @param config
      * @return Egroupware
      */
@@ -109,6 +128,18 @@ public class Egroupware implements Runnable {
         return null;
     }
 
+	/**
+	 * getLastInstance
+	 * @return
+	 */
+	static public Egroupware getLastInstance() {
+		if( Egroupware._instances.size() > 0 ) {
+			return Egroupware._instances.get(Egroupware._instances.size()-1);
+		}
+
+		return null;
+	}
+
     /**
      * shutdownInstances
      */
@@ -128,6 +159,22 @@ public class Egroupware implements Runnable {
             }
         }
     }
+
+	/**
+	 * setVersion
+	 * @param version
+	 */
+	static public void setVersion(String version) {
+		Egroupware._version = version;
+	}
+
+	/**
+	 * getVersion
+	 * @return
+	 */
+	static public String getVersion() {
+		return Egroupware._version;
+	}
 
     /**
      * EgroupwareConfig
@@ -158,15 +205,14 @@ public class Egroupware implements Runnable {
      * is Requesting
      */
     protected Boolean _isRequesting = false;
-    
+
     /**
      * EgroupwareEventMulticaster
      */
     protected EgroupwareEventMulticaster _eventMulticaster = new EgroupwareEventMulticaster();
 
     /**
-     * constructor
-     *
+     * Egroupware
      * @param config EgroupwareConfig
      */
     public Egroupware(EgroupwareConfig config) {
@@ -194,7 +240,6 @@ public class Egroupware implements Runnable {
 
     /**
      * getConfig
-     *
      * @return EgroupwareConfig
      */
     public EgroupwareConfig getConfig() {
@@ -203,7 +248,6 @@ public class Egroupware implements Runnable {
 
     /**
      * isLogin
-     *
      * @return Boolean
      */
     public Boolean isLogin() {
@@ -218,7 +262,7 @@ public class Egroupware implements Runnable {
             if( this._config.getAnonymous() ) {
                 throw new EGroupwareExceptionAnonymous();
             }
-            
+
             if( this._domains.isEmpty() ) {
                 this.getLoginDomains();
             }
@@ -226,6 +270,16 @@ public class Egroupware implements Runnable {
             if( this._domains.indexOf(this._config.getDomain()) < 0 ) {
                 throw new EGroupwareExceptionUnknowLoginDomain();
             }
+
+			// is username empty
+			if( "".equals(this._config.getUser().trim()) ) {
+				throw new EGroupwareExceptionUserConfig("username");
+			}
+
+			// is password empty
+			if( "".equals(this._config.getPassword().trim()) ) {
+				throw new EGroupwareExceptionUserConfig("password");
+			}
 
             String url = this._config.getUrl() + EGW_HTTP_LOGINSCRIPT +
                 "?" + EGW_HTTP_GET_PHPGW_FORWARD + "=";
@@ -261,7 +315,8 @@ public class Egroupware implements Runnable {
                     _nSession.setValue(key, value);
                 }
                 else {
-                    throw new Exception("cookie parameter not found: " + key);
+                    throw new Exception("cookie parameter not found: " +
+                        key + " sendet cookie: '" + this._http.getRawCookie() + "'");
                 }
             }
 
@@ -271,7 +326,7 @@ public class Egroupware implements Runnable {
             this._eventMulticaster.authentificationSucceeded(
                 new EgroupwareAuthentifiactionEvent(
                     this));
-            
+
             // create thread
             // -----------------------------------------------------------------
             if( this._config.getUseEgwThread() ) {
@@ -281,30 +336,40 @@ public class Egroupware implements Runnable {
                 this._cthread.start();
             }
         }
-        catch( EGroupwareExceptionLoginStatus |
+        catch(
+			EGroupwareExceptionLoginStatus |
             EGroupwareExceptionAnonymous |
             EgroupwareExceptionResponseEmpty |
-            EGroupwareExceptionUnknowLoginDomain es ) {
-            
+            EGroupwareExceptionUserConfig |
+            EGroupwareExceptionUnknowLoginDomain es )
+		{
+			// reset session
+			this._session = null;
+
             // event authentification faild
             this._eventMulticaster.authentificationFailed(
                 new EgroupwareAuthentifiactionEvent(
                     this,
                     es
                 ));
+
+			// fire to next
+            throw es;
         }
         catch( Exception ex ) {
+			// reset session
+			this._session = null;
+
             // fire to next
             throw ex;
         }
-        
+
         // return is login
         return this.isLogin();
     }
 
     /**
      * logout
-     *
      * @throws Exception
      */
     public void logout() throws Exception {
@@ -334,34 +399,42 @@ public class Egroupware implements Runnable {
                 new EgroupwareLogoutEvent(
                     this
                 ));
-            
+
             throw ex;
         }
-        
+
         // event logout succeeded
         this._eventMulticaster.logoutSucceeded(
             new EgroupwareLogoutEvent(
                 this
             ));
+
+		// reset domains
+		this._domains.clear();
     }
 
     /**
      * addListener
-     * @param a 
+     * @param a
      */
     public void addListener(EgroupwareEventListener a) {
         this._eventMulticaster.add(a);
     }
-    
+
     /**
      * _getLoginStatus
-     * @return int
+     * @param http
+     * @return
      */
-    protected int _getLoginStatus() {
-        String _tbuff = this._http.getLocation();
+    protected int _getLoginStatus(EgroupwareHttp http) {
+        if( http == null ) {
+            http = this._http;
+        }
+
+        String _tbuff = http.getLocation();
 
         if( _tbuff == null ) {
-            _tbuff = this._http.getRequestURI();
+            _tbuff = http.getRequestURI();
         }
 
         if( _tbuff == null ) {
@@ -390,11 +463,22 @@ public class Egroupware implements Runnable {
 
     /**
      * _checkLoginStatus
+     *
      * @throws EGroupwareExceptionLoginStatus
      */
     protected void _checkLoginStatus() throws EGroupwareExceptionLoginStatus {
+        this._checkLoginStatus(null);
+    }
+
+    /**
+     * _checkLoginStatus
+     *
+     * @param http
+     * @throws EGroupwareExceptionLoginStatus
+     */
+    protected void _checkLoginStatus(EgroupwareHttp http) throws EGroupwareExceptionLoginStatus {
         if( !this._config.getAnonymous() ) {
-            int status = this._getLoginStatus();
+            int status = this._getLoginStatus(http);
 
             if( (status > EGW_HTTP_LOGIN_STATUS_NONE) && (status < EGW_HTTP_LOGIN_STATUS_LOGIN) ) {
                 this._session = null;
@@ -421,7 +505,6 @@ public class Egroupware implements Runnable {
 
     /**
      * getLoginDomains
-     *
      * @return List<String>
      * @throws Exception
      */
@@ -436,8 +519,8 @@ public class Egroupware implements Runnable {
         String buffer = this._http.sendGET(url);
 
         /**
-		 * Hidden Logindomain
-		 */
+         * Hidden Logindomain
+         */
         int begin   = -1;
         int end     = -1;
 
@@ -448,53 +531,53 @@ public class Egroupware implements Runnable {
 
             if( (begin != -1) && (end != -1) ) {
                 String tmp = buffer.substring( begin +
-                        search.length(), end);
+                    search.length(), end);
 
-				this._domains.add(tmp);
+                this._domains.add(tmp);
 
                 return this._domains;
             }
         }
 
         /**
-		 * Select Logindomain
-		 */
+         * Select Logindomain
+         */
 
-		begin  = -1;
+        begin  = -1;
         end    = -1;
         search = "<select name=\"logindomain\"";
 
-		if( (begin = buffer.indexOf(search)) > -1 ) {
-			end = buffer.indexOf("</select>", begin + search.length());
+        if( (begin = buffer.indexOf(search)) > -1 ) {
+            end = buffer.indexOf("</select>", begin + search.length());
 
-			if( (begin != -1) && (end != -1) ) {
-				String tmp = buffer.substring( begin +
-                        search.length(), end);
+            if( (begin != -1) && (end != -1) ) {
+                String tmp = buffer.substring( begin +
+                search.length(), end);
 
-				tmp = tmp.trim();
+                tmp = tmp.trim();
 
-				String ltmp[] = tmp.split("</option>");
+                String ltmp[] = tmp.split("</option>");
 
-				for( int i=0; i<ltmp.length; i++ ) {
-					String tbuffer	= ltmp[i];
-					String tsearch	= "value=\"";
+                for( int i=0; i<ltmp.length; i++ ) {
+                    String tbuffer	= ltmp[i];
+                    String tsearch	= "value=\"";
 
-					int tbegin		= -1;
-					int tend		= -1;
+                    int tbegin		= -1;
+                    int tend		= -1;
 
-					if( (tbegin = tbuffer.indexOf(tsearch)) > -1 ) {
-						tend = tbuffer.indexOf("\"", tbegin + tsearch.length());
+                    if( (tbegin = tbuffer.indexOf(tsearch)) > -1 ) {
+                        tend = tbuffer.indexOf("\"", tbegin + tsearch.length());
 
-						if( (begin != -1) && (tend != -1) ) {
-							String ttmp = tbuffer.substring( tbegin +
-									tsearch.length(), tend);
+                        if( (begin != -1) && (tend != -1) ) {
+                            String ttmp = tbuffer.substring( tbegin +
+                                tsearch.length(), tend);
 
-							this._domains.add(ttmp);
-						}
-					}
-				}
-			}
-		}
+                            this._domains.add(ttmp);
+                        }
+                    }
+                }
+            }
+        }
 
         return this._domains;
     }
@@ -509,7 +592,6 @@ public class Egroupware implements Runnable {
 
     /**
      * createBrowserLink
-     *
      * @param menuaction
      * @return String
      */
@@ -523,7 +605,7 @@ public class Egroupware implements Runnable {
         }
 
         String url = this._config.getUrl() +
-            EGW_HTTP_INDEXSCRIPT + "?notifiy=1";
+            EGW_HTTP_INDEXSCRIPT + "?notifiy=1&cd=yes";
 
         if( (menuaction != null) && (menuaction.length() > 0) ) {
             url = url + "&" + menuaction;
@@ -540,18 +622,11 @@ public class Egroupware implements Runnable {
 
     /**
      * request
-     *
      * @param request EgroupwarRequest
      * @return
      * @throws Exception
      */
     public EgroupwarRequest request(EgroupwarRequest request) throws Exception {
-        while( this._isRequesting ) {
-            Thread.sleep(1000);
-        }
-        
-        this._isRequesting = true;
-        
         try {
             if( !this._config.getAnonymous() ) {
                 if( !this.isLogin() ) {
@@ -564,20 +639,33 @@ public class Egroupware implements Runnable {
 
             this._http.setRawCookie(this._session.getRawCookie());
 
-            if( request.getRequestType() == EgroupwarRequest.EGW_HTTP_REQUEST_POST ) {
-                buffer = this._http.sendPOST(url, request.getPost());
+            EgroupwareHttp http = this._http.getNewHttpClone();
+
+			if( request.getRequestType() == EgroupwarRequest.EGW_HTTP_REQUEST_FILE_UPLOAD ) {
+				List<String> responses = http.sendFile(url, request.getRequestFile(), request.getPost());
+
+				if( responses.size() > 0 ) {
+					buffer = responses.get(responses.size()-1);
+				}
+			}
+			else if( request.getRequestType() == EgroupwarRequest.EGW_HTTP_REQUEST_FILE_DOWNLOAD ) {
+				request.setRequestFile(http.downloadFile(url));
+				buffer = "{}";
+			}
+			else if( request.getRequestType() == EgroupwarRequest.EGW_HTTP_REQUEST_POST ) {
+                buffer = http.sendPOST(url, request.getPost());
             }
             else {
-                buffer = this._http.sendGET(url);
+                buffer = http.sendGET(url);
             }
 
             // ---------------------------------------------------------------------
 
-            if( this._http.isSiteNotFound() ) {
+            if( http.isSiteNotFound() ) {
                 throw new EGroupwareExceptionSiteNotFound(url);
             }
 
-            this._checkLoginStatus();
+            this._checkLoginStatus(http);
 
             if( buffer.length() == 0 ) {
                 throw new EgroupwareExceptionResponseEmpty(url);
@@ -598,21 +686,21 @@ public class Egroupware implements Runnable {
                 this._checkLoginStatus();
             }
 
-            this._isRequesting = false;
-            
+            //this._isRequesting = false;
+
             // listener succes request
             this._eventMulticaster.requestSucceeded(
                 new EgroupwareEventRequest(this, request));
-            
+
             return request;
         }
         catch( Exception ex ) {
-            this._isRequesting = false;
-            
+            //this._isRequesting = false;
+
             // listener faild request
             this._eventMulticaster.requestFailed(
                 new EgroupwareEventRequest(this, request));
-            
+
             throw ex;
         }
     }
@@ -637,9 +725,9 @@ public class Egroupware implements Runnable {
 
                 // thread event
                 this._eventMulticaster.threadAction(new EgroupwareEvent(this));
-                
+
                 // -------------------------------------------------------------
-                
+
                 EgroupwareNotifications notif = new EgroupwareNotifications();
 
                 try {
@@ -658,16 +746,16 @@ public class Egroupware implements Runnable {
             Logger.getLogger(Egroupware.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * isRunnableAlive
-     * @return is egroupware thread 
+     * @return is egroupware thread
      */
     public Boolean isRunnableAlive() {
         if( this._cthread != null ) {
             return this._cthread.isAlive();
         }
-        
+
         return false;
     }
 }

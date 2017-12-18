@@ -9,29 +9,27 @@
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 17.1
  */
-package com.jegroupware.egroupware.exceptions;
+package com.jegroupware.egroupware.apps.filemanager;
+
+import java.util.LinkedHashMap;
 
 /**
- * EGroupwareExceptionRedirect
+ * FilemanagerBase
  * @author Stefan Werfling
  */
-public class EGroupwareExceptionRedirect extends Exception {
+abstract public class FilemanagerBase {
 
-    /**
-     * URL
-     */
-    protected String _url = "";
+	/**
+	 * getRequest
+	 * return request string
+	 * @return
+	 */
+	abstract public Object getRequest();
 
-    /**
-     * EGroupwareExceptionRedirect
-     * @param url
-     */
-    public EGroupwareExceptionRedirect(String url) {
-        super("egroupware redirect to url: " + url);
-        this._url = url;
-    }
-
-    public String getUrl() {
-        return this._url;
-    }
+	/**
+	 * getResponse
+	 * @param jsonresponse
+	 * @return
+	 */
+	abstract public Object getResponse(LinkedHashMap jsonresponse);
 }

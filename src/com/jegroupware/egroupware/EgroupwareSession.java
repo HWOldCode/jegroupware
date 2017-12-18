@@ -5,7 +5,7 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-16 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 14.2.6
  */
@@ -15,7 +15,6 @@ import java.io.*;
 
 /**
  * EgroupwareSession
- *
  * @author Stefan Werfling
  */
 public class EgroupwareSession implements Serializable {
@@ -57,11 +56,9 @@ public class EgroupwareSession implements Serializable {
     protected String _domain = "";
 
     /**
-     * constructor
+     * EgroupwareSession
      */
-    public EgroupwareSession() {
-        // default
-    }
+    public EgroupwareSession() {}
 
     /**
      * getCookieParameters
@@ -102,7 +99,6 @@ public class EgroupwareSession implements Serializable {
 
     /**
      * getValue
-     *
      * @param key
      * @return String
      */
@@ -224,7 +220,6 @@ public class EgroupwareSession implements Serializable {
 
 	/**
 	 * toSerializableString
-	 *
 	 * @param session
 	 * @return
 	 * @throws IOException
@@ -241,7 +236,6 @@ public class EgroupwareSession implements Serializable {
 
 	/**
 	 * fromSerializableString
-	 *
 	 * @param serialize
 	 * @return
 	 * @throws IOException

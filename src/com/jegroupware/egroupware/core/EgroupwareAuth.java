@@ -5,18 +5,14 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-15 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-17 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
- * @version 14.2.6
+ * @version 17.1
  */
 package com.jegroupware.egroupware.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.codec.digest.Crypt;
@@ -27,6 +23,14 @@ import org.apache.commons.codec.digest.Crypt;
  */
 public class EgroupwareAuth {
 
+	/**
+	 * comparePassword
+	 * @param cleartext
+	 * @param encrypted
+	 * @param type_in
+	 * @param username
+	 * @return
+	 */
     static public Boolean comparePassword(String cleartext, String encrypted, String type_in, String username) {
         String type = type_in;
         String saved_enc = encrypted;
@@ -91,22 +95,21 @@ public class EgroupwareAuth {
 
     /**
      * _cryptCompare
-     * 
      * @param form_val
      * @param db_val
      * @param type
-     * @return 
+     * @return
      */
     static protected Boolean _cryptCompare(String form_val, String db_val, String type) {
-        
+
         // alternative check for password
         // http://code.google.com/p/jbcrypt/
         if( BCrypt.checkpw(form_val, db_val) ) {
             return true;
         }
-        
+
         //----------------------------------------------------------------------
-        
+
         HashMap<String, String[]> params = new HashMap<String, String[]>();
         params.put("crypt", new String[]{"CRYPT_STD_DES", "", "2", ""});
         params.put("ext_crypt", new String[]{"CRYPT_EXT_DES", "_J9..", "4", ""});
@@ -140,13 +143,15 @@ public class EgroupwareAuth {
 
             String prefix = tparams[1];
             String random = tparams[2];
+
             int irandom = Integer.parseInt(random);
-            String postfix = tparams[3];
+
+			String postfix = tparams[3];
 
             String[] tlist = prefix.split("\\$");
 
             String d = "";
-            
+
             if( tlist.length > 1 ) {
                 d = tlist[1];
             }
@@ -182,7 +187,7 @@ public class EgroupwareAuth {
             }
         }
         catch( Exception ex ) {
-            
+			//TODO
         }
 
         return false;

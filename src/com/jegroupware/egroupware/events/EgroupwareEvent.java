@@ -19,18 +19,18 @@ import java.util.EventObject;
  * @author Stefan Werfling
  */
 public class EgroupwareEvent extends EventObject {
-    
+
     /**
-     * constructor
-     * @param source 
+     * EgroupwareEvent
+     * @param source
      */
     public EgroupwareEvent(Egroupware source) {
         super(source);
     }
-    
+
     /**
      * getEgroupware
-     * @return 
+     * @return
      */
     public Egroupware getEgroupware() {
         return (Egroupware) this.getSource();
