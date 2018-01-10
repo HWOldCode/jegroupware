@@ -15,4 +15,12 @@ public class EgroupwareUser {
 	 * Username
 	 */
 	protected String _username;
+
+	/**
+	 * getUsername
+	 * @return
+	 */
+	public String getUsername() {
+		return this._username;
+	}
 }

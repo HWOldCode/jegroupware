@@ -164,7 +164,13 @@ public class EgroupwareHttp {
     protected void _readHeader() throws Exception {
         if( this._connection != null ) {
             Map<String, List<String>> headers = this._connection.getHeaderFields();
-            List<String> values = headers.get("Set-Cookie");
+            List<String> values = null;
+
+			values = headers.get("Set-Cookie");
+
+			if( values == null ) {
+				values = headers.get("set-cookie");
+			}
 
             this._cookie = "";
 

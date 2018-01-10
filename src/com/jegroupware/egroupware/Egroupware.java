@@ -5,7 +5,7 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-17 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-18 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 17.1
  */
@@ -758,4 +758,12 @@ public class Egroupware implements Runnable {
 
         return false;
     }
+
+	/**
+	 * getLang
+	 * @return
+	 */
+	public EgroupwareLang getLang() {
+		return new EgroupwareLang(this);
+	}
 }

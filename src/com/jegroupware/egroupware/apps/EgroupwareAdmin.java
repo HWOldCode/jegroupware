@@ -5,7 +5,7 @@
  * @link https://www.hw-softwareentwicklung.de
  * @author Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @package jegroupware
- * @copyright (c) 2012-17 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
+ * @copyright (c) 2012-18 by Stefan Werfling <stefan.werfling-AT-hw-softwareentwicklung.de>
  * @license http://opensource.org/licenses/GPL-2.0 GPL2 - GNU General Public License, version 2 (GPL-2.0)
  * @version 17.1
  */
@@ -13,6 +13,8 @@ package com.jegroupware.egroupware.apps;
 
 import com.jegroupware.egroupware.Egroupware;
 import com.jegroupware.egroupware.EgroupwareApp;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * EgroupwareAdmin
@@ -27,7 +29,18 @@ public class EgroupwareAdmin extends EgroupwareApp {
         super("admin");
     }
 
+	/**
+     * getPost
+     * @return Map<String, String>
+     */
+    @Override
+    public Map<String, String> getPost() {
+		Map<String, String> data = new HashMap<>();
+
+		return data;
+	}
+
 	public void getUserList(Egroupware egw) {
-		
+
 	}
 }
