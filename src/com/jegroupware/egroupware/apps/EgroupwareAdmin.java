@@ -13,7 +13,9 @@ package com.jegroupware.egroupware.apps;
 
 import com.jegroupware.egroupware.Egroupware;
 import com.jegroupware.egroupware.EgroupwareApp;
+import com.jegroupware.egroupware.EgroupwareUser;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class EgroupwareAdmin extends EgroupwareApp {
 		return data;
 	}
 
-	public void getUserList(Egroupware egw) {
-
+	public List<EgroupwareUser> getUserList(Egroupware egw) {
+		return null;
 	}
 }

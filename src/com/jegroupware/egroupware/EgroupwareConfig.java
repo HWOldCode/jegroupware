@@ -264,6 +264,23 @@ public class EgroupwareConfig implements Serializable {
         return this._egwThread;
     }
 
+	/**
+	 * update
+	 * @param config
+	 */
+	public void update(EgroupwareConfig config) {
+		this._url				= config._url;
+		this._user				= config._user;
+		this._password			= config._password;
+		this._anonymous			= config._anonymous;
+		this._autoLogin			= config._autoLogin;
+		this._autoLogout		= config._autoLogout;
+		this._defaultBrowser	= config._defaultBrowser;
+		this._domain			= config._domain;
+		this._egwThread			= config._egwThread;
+		this._socketTimeout		= config._socketTimeout;
+	}
+
     /**
      * equals
      * @param config EgroupwareConfig

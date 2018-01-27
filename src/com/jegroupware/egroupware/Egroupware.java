@@ -90,18 +90,32 @@ public class Egroupware implements Runnable {
 	 */
 	static protected String _version = null;
 
+	/**
+	 * getInstance
+	 * @param config
+	 * @return
+	 */
+	static public Egroupware getInstance(EgroupwareConfig config) {
+		return Egroupware.getInstance(config, true);
+	}
+
     /**
      * getInstance
      * @param config
+	 * @param configUpdate
      * @return Egroupware
      */
-    static public Egroupware getInstance(EgroupwareConfig config) {
+    static public Egroupware getInstance(EgroupwareConfig config, boolean configUpdate) {
         Egroupware egw = null;
 
         for( Egroupware _tinstance : Egroupware._instances ) {
             egw = _tinstance;
 
             if( egw.getConfig().equals(config) ) {
+				if( configUpdate ) {
+					egw.getConfig().update(config);
+				}
+
                 return egw;
             }
         }
